@@ -1,3 +1,48 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="output.css">
+</head>
+<body>
+
+    
+<div class="  flex flex-col items-center justify-center h-screen w-full bg-[#e6effa]">
+    <p class='text-6xl py-7'> 新增資料</p>
+    <div class='w-full max-w-md p-4 rounded-lg shadow-md bg-gray-100'>
+        <form action="add.php" method="post">
+            <table class="w-full">
+                <tr class="mb-4">
+                    <th class="text-left font-medium text-gray-900 uppercase tracking-wider">User</th>
+                    <td><input type="text" name="user" id="user" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></td>
+                </tr>
+                <tr class="mb-4">
+                    <th class="text-left font-medium text-gray-900 uppercase tracking-wider">Password</th>
+                    <td><input type="password" name="password" id="password" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></td>
+                </tr>
+                <tr class="mb-4">
+                    <th class="text-left font-medium text-gray-900 uppercase tracking-wider">Registration Date</th>
+                    <td><input type="date" name="reg_date" id="reg_date" value="<?php echo date("Y-m-d"); ?>" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></td>
+                </tr>
+            </table>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700">Add Contact</button>
+        </form>
+    </div>
+    <hr class='my-4'>
+        <div class="flex gap-4 mt-4">
+
+            <a href="home.php" class="px-2 hover:text-blue-500">Homepage</a>
+
+            <a href="add.php" class="px-2 hover:text-blue-500">Add New Information</a>
+
+            <a href="search.php" class="px-2 hover:text-blue-500">Search</a>
+
+        </div>
+</div>
+
 <?php
 
 include("database.php");
@@ -30,13 +75,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 mysqli_close($conn);
-echo "<form action='add.php' method='post'>";
-echo "<table>";
-echo "<tr><th>User</th><td><input type='text' name='user' id='user'></td></tr>";
-echo "<tr><th>Password</th><td><input type='password' name='password' id='password'></td></tr>";
-echo "<tr><th>Registration Date</th><td><input type='date' name='reg_date' id='reg_date' value='" . date("Y-m-d") . "'></td></tr>";
-echo "</table>";
-echo "<button type='submit'>Add Contact</button>";
-echo "</form>";
+
 
 ?>
+</body>
+</html>
+
+
