@@ -1,61 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="output.css">
 </head>
 <body>
-    <form action="index.php" method="POST">
-        <h1>登入網站</h1> <br>
-        username: <br>
-        <input type="text" name="username"> <br><br>
-        password: <br>
-        <input type="password" name="password"> <br><br>
-    
-        <input type="submit" name="register" value="Log in"> <br>
-    </form>
-
-
 <?php
 
-    include("database.php");
+include("database.php");
 
-    session_start();
+// Check for form submission
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    // 接收表單資料
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    // Validate input
+    if (isset($_POST['username']) && isset($_POST['password'])) {
 
-    // 驗證帳號密碼
-    $sql = "SELECT * FROM contacts WHERE user='$username' AND password='$password'";
-    $result = mysqli_query($conn, $sql);
-    $row = mysqli_fetch_assoc($result);
+        // Sanitize input
+        $username = mysqli_real_escape_string($conn, $_POST['username']);
+        $password = mysqli_real_escape_string($conn, $_POST['password']);
 
-    // 登入成功
-    if ($row) {
-        // 將使用者資訊儲存在 Session 變數
-        $_SESSION['login_session'] = $row;
+        // Authenticate user
+        $sql = "SELECT * FROM contacts WHERE user = '$username' AND password = '$password'";
+        $result = mysqli_query($conn, $sql);
 
-        // 導向首頁
-        header("Location: home.php");
-        exit();
+        if ($result) {
+            if (mysqli_num_rows($result) == 1) {
+
+                // Successful login
+                $row = mysqli_fetch_assoc($result);
+
+                // Start session and store relevant user data
+                session_start();
+                $_SESSION['user_id'] = $row['id'];
+
+                // Redirect to appropriate page
+                header("Location: home.php");
+                exit();
+            } else {
+
+                // Invalid credentials
+                // Display appropriate error message
+                $both_error = "Invalid username or password.";
+            }
+        } else {
+
+            // SQL query error
+            // Log error or display generic error message
+            $both_error = "An error occurred. Please try again later.";
+        }
+
+        mysqli_free_result($result); // Free the result set
+    } else {
+
+        // Handle missing form data
+        if (empty($username)) {
+            $username_error = "Please fill a username.";
+        } else {
+            $username_error = "";
+        }
+
+        if (empty($password)) {
+            $password_error = "Please fill a password.";
+        } else {
+            $password_error = "";
+        }
     }
-    elseif(empty($username)){
-        echo"Please fill a username";
-    }
-    elseif(empty($password)){
-        echo"Please fill a password";
-    }
+}
 
-    // 登入失敗
-    else {
-        // 顯示錯誤訊息
-        echo "帳號或密碼錯誤！";
-    }
 
-    mysqli_close($conn);
+
+
 ?>
+
+
+    <div class=" h-screen w-full items-center justify-center flex bg-[#e6effa]">
+            <form  class=" bg-gray-100  shadow-xl grid box-border h-[48rem] w-96 border-2 rounded-md items-center justify-center " action="index.php" method="POST">
+                <h1 class="text-7xl pt-6" >登入網站</h1> <br>
+                <div class=" grid grid-cols-1 space-y-2 ">
+                    <p>Username: </p>
+                    <input class=" w-60 h-8 bg-white inline p-2 rounded-sm" type="text" name="username">
+                    <p>Password: </p>
+                    <input class=" w-60 h-8 bg-white inline p-2 rounded-sm" type="password" name="password">
+                   
+                </div>
+                <input class=" rounded-md h-10 w-24 bg-blue-600 text-white my-4 hover:bg-blue-800" type="submit" name="register" value="Log in"> <br>
+            </form>
+    </div>
+
+
 
 </body>
 </html>
